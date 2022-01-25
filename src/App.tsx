@@ -8,7 +8,7 @@ function App() {
   if (!symbol || symbol.length === 0) {
     return <Form onSymbolSelect={(s) => setSymbol(s)} />;
   } else {
-    return <Ticker />;
+    return <Ticker symbol={symbol} />;
   }
 }
 
