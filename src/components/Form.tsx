@@ -22,7 +22,9 @@ function Form(props: FormProps) {
                 "symbol"
               ) as HTMLInputElement;
 
-              props.onSymbolSelect(textField.value);
+              const symbol = textField.value.toUpperCase();
+              props.onSymbolSelect(symbol);
+              document.title = symbol;
             }}
           >
             <div>
@@ -30,9 +32,16 @@ function Form(props: FormProps) {
                 htmlFor="email"
                 className="block text-sm font-medium text-gray-700"
               >
-                Symbol (e.g. AAPL)
+                Symbol{" "}
+                <a
+                  href="https://finance.yahoo.com/lookup"
+                  className="underline text-blue-600"
+                  target="_blank"
+                >
+                  (e.g. AAPL)
+                </a>
               </label>
-              <div className="mt-1">
+              <div className="mt-2">
                 <input
                   id="symbol"
                   name="symbol"
