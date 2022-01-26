@@ -11,7 +11,6 @@ function Ticker(props: TickerProps) {
   const previousPrice = usePrevious(price);
   const [message, setMessage] = useState("Loading...");
   const socket = useRef<WebSocket>();
-  const encoder = new TextEncoder();
 
   useEffect(() => {
     if (!socket.current) {
@@ -53,7 +52,7 @@ function Ticker(props: TickerProps) {
         setMessage("WebSocket closed.");
       });
     }
-  });
+  }, [props.symbol]);
 
   if (isNaN(price) || socket.current?.readyState === WebSocket.CLOSED) {
     return (

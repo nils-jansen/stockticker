@@ -37,6 +37,7 @@ function Form(props: FormProps) {
                   href="https://finance.yahoo.com/lookup"
                   className="underline text-blue-600"
                   target="_blank"
+                  rel="noreferrer"
                 >
                   (e.g. AAPL)
                 </a>
