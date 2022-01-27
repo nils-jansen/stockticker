@@ -62,7 +62,7 @@ function Ticker(props: TickerProps) {
 
   if (isNaN(price) || socket.current?.readyState === WebSocket.CLOSED) {
     return (
-      <div className="h-full flex items-center justify-center text-2xl">
+      <div className="h-full flex items-center justify-center text-center text-2xl">
         {message}
       </div>
     );
