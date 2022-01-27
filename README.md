@@ -1,46 +1,21 @@
-# Getting Started with Create React App
+# Live Stockticker using Yahoo Finance data
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+I recently discovered that the [Yahoo Finance](https://finance.yahoo.com) website uses a public [API](wss://streamer.finance.yahoo.com/) to get live market data into the frontend. After some more digging, it became obvious this was done using [WebSockets](https://developer.mozilla.org/en-US/docs/Web/API/WebSockets_API) and [ProtoBuf](https://developers.google.com/protocol-buffers), both of which I wanted to get a feeling for anyway. So, I decided to build a simple price tracker in order to get familiar with the technologies used.
 
-## Available Scripts
+The project is a simple React App, scaffolded with [create-react-app](https://create-react-app.dev/).
 
-In the project directory, you can run:
+![screenshot](screenshot.png)
 
-### `npm start`
+## Installation
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+    $ git clone https://github.com/nils-jansen/stockticker.git
+    $ cd stockticker
+    $ npm install
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+## Usage
 
-### `npm test`
+    $ npm start
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+Enter a stock symbol as used on [finance.yahoo.com](https://finance.yahoo.com/lookup) and wait for the first message from the WebSocket connection.
 
-### `npm run build`
-
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
-
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
+The file "[yaticker_pb.js](src/util/yaticker_pb.js)" was generated with [protoc](https://github.com/protocolbuffers/protobuf/releases), using the .proto file available at [github.com/yahoofinancelive/yliveticker](https://github.com/yahoofinancelive/yliveticker/blob/master/yliveticker/yaticker.proto).
