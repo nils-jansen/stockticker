@@ -22,7 +22,7 @@ function Form(props: FormProps) {
                 "symbol"
               ) as HTMLInputElement;
 
-              const symbol = textField.value.toUpperCase();
+              const symbol = textField.value.toUpperCase().replaceAll(" ", "");
               props.onSymbolSelect(symbol);
               document.title = symbol;
             }}
