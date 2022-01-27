@@ -8,9 +8,12 @@ interface TickerProps {
 
 function Ticker(props: TickerProps) {
   const [price, setPrice] = useState(NaN);
+  const [change, setChange] = useState(NaN);
+  const [changePercent, setChangePercent] = useState(NaN);
   const previousPrice = usePrevious(price);
   const [message, setMessage] = useState("Loading...");
   const socket = useRef<WebSocket>();
+  const priceLabelRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (!socket.current) {
@@ -23,6 +26,9 @@ function Ticker(props: TickerProps) {
 
           if (message.id === props.symbol) {
             setPrice(message.price);
+            setChange(message.change);
+            setChangePercent(message.changepercent);
+
             const formattedPrice = new Intl.NumberFormat("en-US", {
               maximumFractionDigits: 2,
               minimumFractionDigits: 2,
@@ -35,7 +41,7 @@ function Ticker(props: TickerProps) {
       });
 
       socket.current.addEventListener("open", () => {
-        setMessage("WebSocket opened, waiting for messages...");
+        setMessage("WebSocket opened, waiting for first message...");
         const initialMessage = {
           subscribe: [props.symbol],
         };
@@ -67,55 +73,52 @@ function Ticker(props: TickerProps) {
     minimumFractionDigits: 2,
   }).format(price);
 
+  var changeClasses: string[] = [];
+  if (price < previousPrice) {
+    changeClasses = ["bg-red-200"];
+  } else if (price > previousPrice) {
+    changeClasses = ["bg-green-200"];
+  }
+
+  if (changeClasses.length > 0) {
+    priceLabelRef.current?.classList.add(...changeClasses);
+    setTimeout(() => {
+      priceLabelRef.current?.classList.remove(...changeClasses);
+    }, 500);
+  }
+
+  const changeSign = change < 0 ? "" : "+";
+
   return (
-    <div className="h-full">
-      <div
-        style={{ height: "90%" }}
-        className="flex items-center justify-center"
-      >
-        <div>
-          <div className="flex flex-row-reverse justify-between">
-            <div className="px-2 py-1 flex items-center gap-x-2 bg-slate-200 rounded-lg">
-              <p className="font-semibold text-sm italic">LIVE</p>
-              <div className="w-2 h-2 bg-red-600 rounded-full hover:animate-ping"></div>
-            </div>
-            <div className="flex items-center gap-2">
-              <div className="text-2xl font-semibold">{props.symbol}</div>
+    <div className=" h-full flex items-center justify-center">
+      <div>
+        <div className="flex flex-row-reverse justify-between">
+          <div className="px-2 py-1 flex items-center gap-x-2 bg-slate-200 rounded-lg">
+            <p className="font-semibold text-sm italic">LIVE</p>
+            <div className="w-2 h-2 bg-red-600 rounded-full hover:animate-ping"></div>
+          </div>
+          <div className="flex items-center gap-2">
+            <div className="text-xl md:text-2xl lg:text-4xl font-semibold">
+              {props.symbol}
             </div>
           </div>
-          {price > previousPrice ? (
-            <div className="py-8 text-5xl md:text-7xl lg:text-9xl font-bold text-green-600">
-              {formattedPrice}
-            </div>
-          ) : (
-            <div className="py-8 text-5xl md:text-7xl lg:text-9xl font-bold text-red-600">
-              {formattedPrice}
-            </div>
-          )}
         </div>
-      </div>
-      <div
-        style={{ height: "10%" }}
-        className="flex items-center justify-center gap-8"
-      >
-        <button
-          disabled={socket.current?.readyState === WebSocket.CLOSED}
-          onClick={() => {
-            socket.current?.close();
-          }}
-          className="inline-flex items-center px-4 py-2 border border-transparent text-base font-medium rounded-md text-slate-700 bg-slate-100 hover:bg-slate-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-500 transition-colors"
+        <div
+          ref={priceLabelRef}
+          id="priceLabel"
+          className="my-8 text-5xl md:text-7xl lg:text-9xl font-bold transition-colors"
         >
-          Close WebSocket
-        </button>
-        <button
-          disabled={socket.current?.readyState === WebSocket.CLOSED}
-          onClick={() => {
-            window.location.reload();
-          }}
-          className="inline-flex items-center px-4 py-2 border border-transparent text-base font-medium rounded-md text-slate-700 bg-slate-100 hover:bg-slate-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-500 transition-colors"
+          {formattedPrice}
+        </div>
+        <div
+          className={`text-lg md:text-xl lg:text-2xl font-semibold text-center ${
+            change < 0 ? "text-red-500" : "text-green-500"
+          }`}
         >
-          Reload
-        </button>
+          {changeSign}
+          {change.toFixed(2)} ({changeSign}
+          {changePercent.toFixed(2)}%)
+        </div>
       </div>
     </div>
   );
